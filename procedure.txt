@@ -1,0 +1,103 @@
+#####   Procedure of building a system with FastAPI #####
+
+
+1. Create the "main.py" file. Inside that, import the fastapi module & build simple APIs using simple python-methods.
+
+2. After building the method & decorating with the instance of FastAPI ("app"), we need to start the server, we use the following cmd.
+    uvicorn main:app --reload
+
+    Syntax:  uvicorn fileName:FastAPI_objectName --reload
+
+NB:  Uvicorn is a lightning-fast ASGI server, which can be used to run django-projects. 
+    The operation that is wrapped with a FastAPI decorator, is called "Path Operation Function".
+
+
+-----------------> Break down of FastAPI
+
+2. Initialize empty git repository in the working directory.
+    Also create the ".gitignore" file.
+
+3. For dynamic routing in the path of FastAPI decorator, we use second-bracket "{}" along with the pathName string leading a forward-slash.
+    Then we can use that as a variable in the 
+
+
+-----------------> [ Path Parameter ]  Pass id/ other data dynamically inside the FastAPI routing-path
+    To use that in the path-operation-functions.
+
+4. Firstly use the second bracket in the path-string. To use this path-string-variable inside the path-operation-function,
+    we need to use param in the method. By default, it will use the dynamic value as string inside the methods.
+
+5. To define the value as string/ integer/ boolean/ float, it's required to define inside the method's parameter.
+
+
+-----------------> FastAPI using Swagger UI for Frontend UI
+
+6. To view the developed APIs in the browser, use "docs" keyword after the base-url ( "http://127.0.0.1:8080/docs/" )
+
+
+-----------------> Alternative of Swagger UI for Frontend UI
+
+7. Use "redoc" after the base-url ( "http://127.0.0.1:8080/docs/" )
+
+
+-----------------> [ Query Parameter ] Pass Query Parameter in the routing-string.
+
+[ NB ]:  Query parameters are not going to change the routing path of the FastAPI path. We can accept the query parameter 
+    from the routing-path-string using paramterized function.
+
+( Pass 'limit' query paramter)
+8. Use the browser to use query in the routing-path by using the "?limit=10", then it can be fetched inside the function using
+    the paraterized function. ( Please view the "blogList" function )
+
+
+-----------------> [ Path Parameter ] Pass Default Path Parameter, thus it'll not throw errors for the not passing required paramters.
+
+9. Inidividually specify default values for all the parameters of a method. Thus it'll not throw an error & asked for the values of the parameters.
+
+10. If any optional paramters is passed in the method, then we are required to define that using the keyword "Optional" following the colon. 
+    Then assign that parameter with "None".
+
+
+-----------------> How does FastAPI know if the parameter is a query-param or a path-param?
+
+[ Note ]:  FastAPI is smart enough to understand that if a variable is accepted in the method-param, and it matches any dynamic variable of the path-string,
+    then it'll operate as path-parameter, otherwise, it'll treat other parameters as query-parameters.
+    ANd it'll throw an error, if any defult value is not defined for the params as well as not metioned in the url while hitting the API.
+
+
+-----------------> API: Create a new blog 
+
+11. For creating a new blog inside the DB, we first need to establish the connection with the database.
+
+12. [ Establish DB Connection ]: inside the "database.py"
+        Create the db-engine using the SQLAlchemy. Here we need to define the db path in the directory. Initially, we are using the SQLite DB.
+        Then need to instansiate the db-table mapping using the "declarative_base" module.
+        Create the DB session using the sessionmaker.
+    
+[ NB ]:  The model-class inside the "schemas.py" is responsible for creating the request-body in the browser/ client/ user-end.
+        The model-class inside the "models.py" is responsible for mapping the db-table as well as table-fields in the DB.
+
+13. [ "main.py" ]  For making the migrations inside the DB, we need to define the engine using the following code-block.
+            models.Base.metadata.create_all( engine )
+    Create the function ( "create_blog" ) to create the row inside the DB.
+
+[ IMPORTANT ]:  Any API function interacting with the DB should have the "db" param whose type will be define as Session inported from the "sqlalchemy.orm".
+
+
+-----------------> Exception & Status Code
+
+[ NB ]:  When we create an API, it's very important to provide an appropriate status-code.
+
+14. We can define the status code inside the api-path-decorator with an extra parameter.
+    Follow the link below to define the appropriate http-status-codes.
+        https://docs.python.org/3/library/http.html#http.HTTPStatus
+    [ or follow ]:  https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+    
+    [ Alternatively - better approach ]: Import the "Status" module from the "fastapi" & 
+        use that in the "status_code" param. The VS Code auto-complete will help to guide.
+
+15. To ensure appropriate status-code while handling exception, we are required to use the "Response" module imported from "fastapi".
+    The response param in the method will be as "Response".
+    The status_code param will be overriden.
+
+    
